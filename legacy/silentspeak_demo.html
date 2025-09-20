@@ -1,0 +1,1804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SilentSpeak - Safe Space for Sharing</title>
+<style>
+  :root {
+    /* Calming, accessible color scheme */
+    --primary: #6B46C1;        /* Soft purple - trust & calm */
+    --primary-light: #9F7AEA;  /* Lighter purple */
+    --primary-dark: #553C9A;   /* Darker purple */
+    --secondary: #48BB78;      /* Soft green - growth & safety */
+    --accent: #ED8936;         /* Warm orange - energy & hope */
+    --danger: #F56565;         /* Soft red - alerts */
+    --warning: #F6AD55;        /* Amber - caution */
+    
+    /* Neutrals */
+    --bg: #FAF5FF;             /* Very light purple tint */
+    --surface: #FFFFFF;        /* Pure white for cards */
+    --surface-hover: #F7FAFC;  /* Subtle hover */
+    --text: #2D3748;           /* Dark gray text */
+    --text-muted: #718096;     /* Muted text */
+    --text-light: #A0AEC0;     /* Light text */
+    --border: #E2E8F0;         /* Light border */
+    --border-focus: #9F7AEA;   /* Focus border */
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    --shadow-md: 0 4px 6px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.06);
+    --shadow-lg: 0 10px 20px rgba(0,0,0,0.1), 0 6px 6px rgba(0,0,0,0.06);
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: linear-gradient(135deg, var(--bg) 0%, #FEF5E7 100%);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* Header */
+  .header {
+    background: var(--surface);
+    box-shadow: var(--shadow-sm);
+    padding: 1rem 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary);
+  }
+
+  .logo-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+  }
+
+  .header-info {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    font-size: 0.875rem;
+  }
+
+  .status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--secondary);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+  }
+
+  /* Tabs */
+  .tabs-container {
+    max-width: 1400px;
+    margin: 2rem auto;
+    padding: 0 2rem;
+  }
+
+  .tab-buttons {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    background: var(--surface);
+    padding: 0.5rem;
+    border-radius: 16px;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .tab-btn {
+    flex: 1;
+    padding: 0.75rem 1.5rem;
+    background: transparent;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .tab-btn:hover {
+    background: var(--surface-hover);
+    color: var(--text);
+  }
+
+  .tab-btn.active {
+    background: var(--primary);
+    color: white;
+    box-shadow: var(--shadow-md);
+  }
+
+  .tab-content {
+    display: none;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .tab-content.active {
+    display: block;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Cards */
+  .card {
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow-md);
+    margin-bottom: 1.5rem;
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--border);
+  }
+
+  .card-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+  }
+
+  /* Topics Section */
+  .topics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .topic-chip {
+    padding: 0.75rem 1rem;
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  .topic-chip:hover {
+    border-color: var(--primary-light);
+    background: var(--bg);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .topic-chip.selected {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+  }
+
+  .topic-chip .emoji {
+    display: block;
+    font-size: 1.5rem;
+    margin-bottom: 0.25rem;
+  }
+
+  /* Message Input */
+  .message-input-container {
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow-md);
+    margin-bottom: 1.5rem;
+  }
+
+  .input-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .char-counter {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+  }
+
+  .message-textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 1rem;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    font-size: 1rem;
+    resize: vertical;
+    transition: all 0.3s ease;
+    font-family: inherit;
+  }
+
+  .message-textarea:focus {
+    outline: none;
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 3px rgba(159, 122, 234, 0.1);
+  }
+
+  .input-options {
+    display: flex;
+    gap: 1rem;
+    margin: 1rem 0;
+    flex-wrap: wrap;
+  }
+
+  .checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+  }
+
+  .checkbox-group input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: var(--primary);
+  }
+
+  /* Buttons */
+  .btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .btn-primary {
+    background: var(--primary);
+    color: white;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .btn-primary:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .btn-secondary {
+    background: var(--surface);
+    color: var(--primary);
+    border: 2px solid var(--primary);
+  }
+
+  .btn-secondary:hover {
+    background: var(--primary);
+    color: white;
+  }
+
+  .btn-success {
+    background: var(--secondary);
+    color: white;
+  }
+
+  .btn-danger {
+    background: var(--danger);
+    color: white;
+  }
+
+  .btn-warning {
+    background: var(--warning);
+    color: white;
+  }
+
+  /* Messages Feed */
+  .messages-feed {
+    max-height: 500px;
+    overflow-y: auto;
+    padding: 1rem;
+    background: var(--bg);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+  }
+
+  .message-item {
+    background: var(--surface);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.3s ease;
+  }
+
+  .message-item:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateX(4px);
+  }
+
+  .message-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+
+  .message-author {
+    font-weight: 600;
+    color: var(--primary);
+  }
+
+  .message-meta {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .risk-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .risk-low {
+    background: #E6FFFA;
+    color: #065F46;
+  }
+
+  .risk-medium {
+    background: #FEF3C7;
+    color: #92400E;
+  }
+
+  .risk-high {
+    background: #FEE2E2;
+    color: #991B1B;
+  }
+
+  .message-content {
+    color: var(--text);
+    margin: 0.75rem 0;
+    line-height: 1.5;
+  }
+
+  .message-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .message-actions .btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+  }
+
+  /* Facilitator Queue */
+  .queue-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  .queue-item {
+    background: var(--surface);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    border-left: 4px solid var(--border);
+    transition: all 0.3s ease;
+  }
+
+  .queue-item.high-priority {
+    border-left-color: var(--danger);
+    background: #FEF2F2;
+  }
+
+  .queue-item.medium-priority {
+    border-left-color: var(--warning);
+    background: #FFFBEB;
+  }
+
+  .queue-item:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateX(4px);
+  }
+
+  /* Stats Dashboard */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    padding: 1rem;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary);
+  }
+
+  .stat-label {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+  }
+
+  /* Help Resources */
+  .resources-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .resource-card {
+    background: var(--surface);
+    padding: 1rem;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .resource-card:hover {
+    border-color: var(--primary-light);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
+
+  .resource-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .resource-title {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+
+  .resource-desc {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .header-content {
+      justify-content: center;
+      text-align: center;
+    }
+    
+    .queue-container {
+      grid-template-columns: 1fr;
+    }
+    
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .tabs-container {
+      padding: 0 1rem;
+    }
+    
+    .topics-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  /* Loading State */
+  .loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid var(--border);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* Toast Notifications */
+  .toast {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: var(--surface);
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    max-width: 350px;
+    animation: slideIn 0.3s ease;
+    z-index: 1000;
+  }
+
+  @keyframes slideIn {
+    from { transform: translateX(400px); }
+    to { transform: translateX(0); }
+  }
+
+  .toast.success {
+    border-left: 4px solid var(--secondary);
+  }
+
+  .toast.error {
+    border-left: 4px solid var(--danger);
+  }
+
+  .toast.info {
+    border-left: 4px solid var(--primary);
+  }
+  body.onboarding-active {
+    overflow: hidden;
+  }
+
+  .overlay-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(45, 55, 72, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    z-index: 2000;
+    backdrop-filter: blur(6px);
+  }
+
+  .overlay-backdrop.hidden {
+    display: none;
+  }
+
+  .overlay-card {
+    width: min(100%, 420px);
+    background: var(--surface);
+    border-radius: 20px;
+    box-shadow: var(--shadow-lg);
+    padding: 2rem;
+    display: none;
+    flex-direction: column;
+    gap: 1.25rem;
+    max-height: 80vh;
+    overflow: hidden;
+  }
+
+  .overlay-card.active {
+    display: flex;
+  }
+
+  .overlay-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+  }
+
+  .overlay-description {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+  }
+
+  .overlay-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .overlay-actions .btn {
+    flex: 1;
+    min-width: 120px;
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .input-group label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+  }
+
+  .input-group input {
+    padding: 0.75rem;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    font-size: 1rem;
+    transition: border 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .input-group input:focus {
+    outline: none;
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 3px rgba(159, 122, 234, 0.25);
+  }
+
+  .link-button {
+    background: none;
+    border: none;
+    color: var(--primary);
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0.25rem 0;
+  }
+
+  .link-button:hover {
+    text-decoration: underline;
+  }
+
+  .terms-body {
+    background: var(--surface-hover);
+    border-radius: 12px;
+    padding: 1rem;
+    max-height: 240px;
+    overflow-y: auto;
+    font-size: 0.95rem;
+    color: var(--text);
+  }
+
+  .terms-body ul {
+    margin-left: 1.25rem;
+    margin-top: 0.5rem;
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .profile-options {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .profile-option {
+    border: 2px solid transparent;
+    border-radius: 16px;
+    padding: 1rem;
+    background: var(--surface-hover);
+    cursor: pointer;
+    text-align: left;
+    transition: border 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .profile-option.selected {
+    border-color: var(--primary);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+    background: var(--surface);
+  }
+
+  .profile-option h3 {
+    font-size: 1.1rem;
+    color: var(--primary-dark);
+    margin-bottom: 0.5rem;
+  }
+
+  .profile-option p {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+
+  .room-date-group + .room-date-group {
+    margin-top: 1.25rem;
+  }
+
+  .room-date-group h3 {
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-light);
+    margin-bottom: 0.5rem;
+  }
+
+  .room-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--surface-hover);
+    border-radius: 14px;
+    padding: 1rem;
+    margin-top: 0.75rem;
+    gap: 1rem;
+  }
+
+  .room-item-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .room-name {
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .room-meta {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+
+  .room-chip {
+    background: rgba(107, 70, 193, 0.12);
+    color: var(--primary-dark);
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  @media (max-width: 600px) {
+    .overlay-card {
+      padding: 1.5rem;
+    }
+
+    .overlay-actions .btn {
+      flex: 1 1 100%;
+    }
+  }
+</style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <div class="logo">
+        <div class="logo-icon">💬</div>
+        <span>SilentSpeak</span>
+      </div>
+      <div class="header-info">
+        <div class="status-indicator">
+          <span class="status-dot"></span>
+          <span>System Active</span>
+        </div>
+        <div class="status-indicator">
+          <span id="user-count">0</span>
+          <span>Active Users</span>
+        </div>
+        <div class="status-indicator">
+          <span id="facilitator-count">0</span>
+          <span>Facilitators Online</span>
+        </div>
+        <div class="status-indicator current-room-indicator">
+          <span>Room</span>
+          <span id="current-room-label">Select a room</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="tabs-container">
+    <!-- Tab Buttons -->
+    <div class="tab-buttons">
+      <button class="tab-btn active" onclick="switchTab('participant')">
+        <span>💭</span>
+        <span>Share Your Thoughts</span>
+      </button>
+      <button class="tab-btn" onclick="switchTab('facilitator')">
+        <span>👥</span>
+        <span>Facilitator Dashboard</span>
+      </button>
+    </div>
+
+    <!-- Participant Tab -->
+    <div id="participant-tab" class="tab-content active">
+      <!-- Welcome Message -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Welcome to Your Safe Space</h2>
+          <span id="room-chip" class="room-chip">Room: none selected</span>
+        </div>
+        <p style="color: var(--text-muted); line-height: 1.6;">
+          This is a judgment-free zone where you can share your thoughts and feelings anonymously. 
+          Your privacy is our priority - all messages are posted with random anonymous names.
+        </p>
+      </div>
+
+      <!-- Topic Selection -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">What's on your mind today?</h3>
+          <span style="font-size: 0.875rem; color: var(--text-muted);">Select a topic (optional)</span>
+        </div>
+        <div class="topics-grid">
+          <div class="topic-chip" data-topic="anxiety">
+            <span class="emoji">😰</span>
+            <span>Anxiety</span>
+          </div>
+          <div class="topic-chip" data-topic="school">
+            <span class="emoji">📚</span>
+            <span>School</span>
+          </div>
+          <div class="topic-chip" data-topic="family">
+            <span class="emoji">👨‍👩‍👧</span>
+            <span>Family</span>
+          </div>
+          <div class="topic-chip" data-topic="friends">
+            <span class="emoji">👥</span>
+            <span>Friends</span>
+          </div>
+          <div class="topic-chip" data-topic="mood">
+            <span class="emoji">🎭</span>
+            <span>Mood</span>
+          </div>
+          <div class="topic-chip" data-topic="stress">
+            <span class="emoji">🤯</span>
+            <span>Stress</span>
+          </div>
+          <div class="topic-chip" data-topic="lonely">
+            <span class="emoji">😔</span>
+            <span>Loneliness</span>
+          </div>
+          <div class="topic-chip" data-topic="other">
+            <span class="emoji">💭</span>
+            <span>Other</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Message Input -->
+      <div class="message-input-container">
+        <div class="input-header">
+          <h3 style="color: var(--primary-dark);">Share Your Message</h3>
+          <span class="char-counter"><span id="char-count">0</span> / 500</span>
+        </div>
+        <textarea 
+          id="message-input" 
+          class="message-textarea" 
+          placeholder="Type your message here... Remember, you're not alone in this."
+          maxlength="500"
+        ></textarea>
+        <div class="input-options">
+          <label class="checkbox-group">
+            <input type="checkbox" id="urgent-help">
+            <span>I need urgent support</span>
+          </label>
+          <label class="checkbox-group">
+            <input type="checkbox" id="facilitator-queue">
+            <span>Request facilitator attention</span>
+          </label>
+        </div>
+        <button class="btn btn-primary" onclick="sendMessage()">
+          <span>📤</span>
+          <span>Send Message Anonymously</span>
+        </button>
+      </div>
+
+      <!-- Live Feed -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Community Messages</h3>
+          <span style="font-size: 0.875rem; color: var(--text-muted);">You're not alone</span>
+        </div>
+        <div id="participant-feed" class="messages-feed">
+          <!-- Messages will be inserted here -->
+        </div>
+      </div>
+
+      <!-- Help Resources -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Immediate Help Resources</h3>
+        </div>
+        <div class="resources-grid">
+          <div class="resource-card" onclick="showResource('crisis')">
+            <div class="resource-icon">🆘</div>
+            <div class="resource-title">Crisis Helpline</div>
+            <div class="resource-desc">24/7 confidential support</div>
+          </div>
+          <div class="resource-card" onclick="showResource('breathing')">
+            <div class="resource-icon">🧘</div>
+            <div class="resource-title">Breathing Exercise</div>
+            <div class="resource-desc">Quick calming technique</div>
+          </div>
+          <div class="resource-card" onclick="showResource('grounding')">
+            <div class="resource-icon">🌱</div>
+            <div class="resource-title">Grounding Techniques</div>
+            <div class="resource-desc">Stay present and centered</div>
+          </div>
+          <div class="resource-card" onclick="showResource('chat')">
+            <div class="resource-icon">💬</div>
+            <div class="resource-title">Live Chat Support</div>
+            <div class="resource-desc">Connect with a counselor</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Facilitator Tab -->
+    <div id="facilitator-tab" class="tab-content">
+      <!-- Stats Dashboard -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value" id="total-messages">0</div>
+          <div class="stat-label">Total Messages</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="queue-count">0</div>
+          <div class="stat-label">In Queue</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="high-risk-count">0</div>
+          <div class="stat-label">High Priority</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="response-time">0m</div>
+          <div class="stat-label">Avg Response Time</div>
+        </div>
+      </div>
+
+      <!-- Queue Management -->
+      <div class="queue-container">
+        <!-- Priority Queue -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Priority Queue</h3>
+            <button class="btn btn-warning btn-sm" onclick="refreshQueue()">
+              🔄 Refresh
+            </button>
+          </div>
+          <div id="priority-queue" style="max-height: 400px; overflow-y: auto;">
+            <!-- Queue items will be inserted here -->
+          </div>
+        </div>
+
+        <!-- All Messages -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">All Messages</h3>
+            <select id="filter-select" onchange="filterMessages()" style="padding: 0.5rem; border-radius: 8px; border: 1px solid var(--border);">
+              <option value="all">All Messages</option>
+              <option value="high">High Risk</option>
+              <option value="medium">Medium Risk</option>
+              <option value="low">Low Risk</option>
+              <option value="unreviewed">Unreviewed</option>
+            </select>
+          </div>
+          <div id="facilitator-feed" class="messages-feed">
+            <!-- Messages will be inserted here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Quick Actions</h3>
+        </div>
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+          <button class="btn btn-secondary" onclick="exportData('csv')">
+            📊 Export CSV
+          </button>
+          <button class="btn btn-secondary" onclick="exportData('json')">
+            💾 Export JSON
+          </button>
+          <button class="btn btn-secondary" onclick="clearQueue()">
+            🗑️ Clear Queue
+          </button>
+          <button class="btn btn-primary" onclick="startSession()">
+            ▶️ Start New Session
+          </button>
+          <button class="btn btn-danger" onclick="triggerAlert()">
+            🚨 Crisis Protocol
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast-container"></div>
+
+  <script>
+    // Demo Room Schedule
+    const roomSchedule = [
+      {
+        label: 'Today',
+        rooms: [
+          { id: 'today-grounding', name: 'Grounding Circle', time: '2:00 PM', focus: 'Breathing and mindfulness', availability: '3 spots left' },
+          { id: 'today-reflection', name: 'Evening Reflections', time: '7:00 PM', focus: 'Gratitude check-in', availability: 'Open seating' }
+        ]
+      },
+      {
+        label: 'Tomorrow',
+        rooms: [
+          { id: 'tomorrow-resilience', name: 'Resilience Builder', time: '10:00 AM', focus: 'Coping skills lab', availability: '2 facilitators on call' },
+          { id: 'tomorrow-story-share', name: 'Story Share', time: '4:00 PM', focus: 'Wins and challenges', availability: 'Limited to 12 participants' }
+        ]
+      },
+      {
+        label: 'Later This Week',
+        rooms: [
+          { id: 'weekend-grounding', name: 'Weekend Grounding', time: 'Saturday 11:00 AM', focus: 'Mindful breathing sequence', availability: '5 spots left' },
+          { id: 'weekend-reset', name: 'Sunday Reset', time: 'Sunday 5:00 PM', focus: 'Intention setting for the week', availability: 'Waitlist available' }
+        ]
+      }
+    ];
+    // State Management
+    const state = {
+      messages: [],
+      queue: [],
+      selectedTopic: null,
+      currentTab: 'participant',
+      messageId: 1,
+      userCount: Math.floor(Math.random() * 10) + 5,
+      facilitatorCount: Math.floor(Math.random() * 3) + 1,
+      currentRoom: null,
+      onboarding: {
+        step: 'sign-in',
+        username: '',
+        loginAction: null,
+        acceptedTerms: false,
+        profile: null
+      }
+    };
+
+    // Anonymous Name Generator
+    const anonymousNames = {
+      adjectives: ['Gentle', 'Brave', 'Thoughtful', 'Caring', 'Strong', 'Wise', 'Kind', 'Peaceful', 'Hopeful', 'Resilient'],
+      nouns: ['Butterfly', 'Phoenix', 'Mountain', 'Ocean', 'Star', 'Garden', 'Rainbow', 'Sunrise', 'Moonlight', 'River'],
+      generate() {
+        const adj = this.adjectives[Math.floor(Math.random() * this.adjectives.length)];
+        const noun = this.nouns[Math.floor(Math.random() * this.nouns.length)];
+        const num = Math.floor(Math.random() * 999) + 1;
+        return `${adj} ${noun} #${num}`;
+      }
+    };
+
+
+    // Onboarding Flow Helpers
+    function showOnboardingStep(step) {
+      const overlay = document.getElementById('onboarding-overlay');
+      if (!overlay) {
+        return;
+      }
+
+      state.onboarding.step = step;
+      overlay.classList.remove('hidden');
+      document.body.classList.add('onboarding-active');
+
+      overlay.querySelectorAll('.overlay-card').forEach(card => {
+        const isTarget = card.dataset.step === step;
+        card.classList.toggle('active', isTarget);
+        card.setAttribute('aria-hidden', isTarget ? 'false' : 'true');
+      });
+
+      if (step === 'sign-in') {
+        const usernameInput = document.getElementById('demo-username');
+        setTimeout(() => {
+          if (usernameInput) {
+            usernameInput.focus();
+          }
+        }, 50);
+      }
+
+      if (step === 'terms') {
+        const terms = document.getElementById('terms-scroll');
+        if (terms) {
+          terms.scrollTop = 0;
+        }
+      }
+
+      if (step === 'profile') {
+        if (!state.onboarding.profile) {
+          state.onboarding.profile = 'anonymous';
+        }
+        updateAnonymousPreview();
+        updateProfileSelectionUI();
+      }
+
+      if (step === 'rooms') {
+        renderRoomOptions();
+      }
+    }
+
+    function handleSignIn(action) {
+      const usernameInput = document.getElementById('demo-username');
+      const passwordInput = document.getElementById('demo-password');
+      const username = usernameInput ? usernameInput.value.trim() : '';
+      const password = passwordInput ? passwordInput.value.trim() : '';
+
+      if (!username || !password) {
+        showToast('Enter a username and password to continue the demo', 'error');
+        return;
+      }
+
+      state.onboarding.username = username;
+      state.onboarding.loginAction = action;
+      showToast(`Signed in as ${username}`, 'success');
+      showOnboardingStep('terms');
+    }
+
+    function handleTerms(decision) {
+      if (decision === 'accept') {
+        state.onboarding.acceptedTerms = true;
+        showToast('Thanks for accepting our community guidelines', 'success');
+        showOnboardingStep('profile');
+      } else {
+        state.onboarding.acceptedTerms = false;
+        showToast('You can return when you are ready to agree to the guidelines.', 'info');
+        showOnboardingStep('sign-in');
+      }
+    }
+
+    function selectProfile(type) {
+      state.onboarding.profile = type;
+      updateProfileSelectionUI();
+      if (type === 'custom') {
+        showToast('Custom Guided Support Coach profile selected', 'info');
+      } else if (type === 'anonymous') {
+        showToast('Anonymous Ally profile selected', 'info');
+      }
+    }
+
+    function updateProfileSelectionUI() {
+      const custom = document.getElementById('custom-profile-option');
+      const anonymous = document.getElementById('anonymous-profile-option');
+      const continueButton = document.getElementById('profile-continue');
+
+      if (custom) {
+        custom.classList.toggle('selected', state.onboarding.profile === 'custom');
+      }
+
+      if (anonymous) {
+        anonymous.classList.toggle('selected', state.onboarding.profile === 'anonymous');
+      }
+
+      if (continueButton) {
+        continueButton.disabled = !state.onboarding.profile;
+      }
+    }
+
+    function updateAnonymousPreview() {
+      const preview = document.getElementById('anonymous-preview');
+      if (preview) {
+        preview.textContent = anonymousNames.generate();
+      }
+    }
+
+    function continueProfile() {
+      if (!state.onboarding.profile) {
+        showToast('Select a profile option to continue', 'error');
+        return;
+      }
+      showToast('Profile saved. Choose a room to begin.', 'info');
+      showOnboardingStep('rooms');
+    }
+
+    function renderRoomOptions() {
+      const list = document.getElementById('room-list');
+      if (!list) {
+        return;
+      }
+
+      list.innerHTML = '';
+      roomSchedule.forEach(group => {
+        const groupWrapper = document.createElement('div');
+        groupWrapper.className = 'room-date-group';
+
+        const heading = document.createElement('h3');
+        heading.textContent = group.label;
+        groupWrapper.appendChild(heading);
+
+        group.rooms.forEach(room => {
+          const item = document.createElement('div');
+          item.className = 'room-item';
+
+          const details = document.createElement('div');
+          details.className = 'room-item-details';
+
+          const name = document.createElement('p');
+          name.className = 'room-name';
+          name.textContent = room.name;
+
+          const meta = document.createElement('p');
+          meta.className = 'room-meta';
+          meta.textContent = `${room.time} � ${room.focus} � ${room.availability}`;
+
+          details.appendChild(name);
+          details.appendChild(meta);
+
+          const actionButton = document.createElement('button');
+          actionButton.type = 'button';
+          actionButton.className = 'btn btn-primary';
+          actionButton.textContent = 'Join';
+          actionButton.addEventListener('click', () => {
+            selectRoom({
+              id: room.id,
+              name: room.name,
+              time: room.time,
+              focus: room.focus,
+              availability: room.availability,
+              dateLabel: group.label
+            });
+          });
+
+          item.appendChild(details);
+          item.appendChild(actionButton);
+          groupWrapper.appendChild(item);
+        });
+
+        list.appendChild(groupWrapper);
+      });
+
+      list.scrollTop = 0;
+    }
+
+    function selectRoom(room) {
+      state.currentRoom = room;
+      updateCurrentRoomLabel();
+      closeOnboarding();
+      showToast(`You joined ${room.name}`, 'success');
+    }
+
+    function updateCurrentRoomLabel() {
+      const headerLabel = document.getElementById('current-room-label');
+      const chip = document.getElementById('room-chip');
+
+      if (headerLabel) {
+        headerLabel.textContent = state.currentRoom ? `${state.currentRoom.name}` : 'Select a room';
+      }
+
+      if (chip) {
+        chip.textContent = state.currentRoom ? `Room: ${state.currentRoom.name}` : 'Room: none selected';
+      }
+    }
+
+    function closeOnboarding() {
+      const overlay = document.getElementById('onboarding-overlay');
+      if (!overlay) {
+        return;
+      }
+
+      overlay.classList.add('hidden');
+      document.body.classList.remove('onboarding-active');
+      state.onboarding.step = 'complete';
+    }
+    // Risk Assessment
+    function assessRisk(text) {
+      const loweredText = text.toLowerCase();
+      
+      const highRiskTerms = ['suicide', 'kill myself', 'end it', 'die', 'overdose', 'self-harm', 'cutting', 'not safe', 'hurt myself'];
+      const mediumRiskTerms = ['panic', 'anxious', 'scared', 'depressed', 'cant cope', 'hate myself', 'worthless', 'crying', 'alone'];
+      
+      if (highRiskTerms.some(term => loweredText.includes(term))) {
+        return 'high';
+      } else if (mediumRiskTerms.some(term => loweredText.includes(term))) {
+        return 'medium';
+      }
+      return 'low';
+    }
+
+    // Tab Switching
+    function switchTab(tab) {
+      state.currentTab = tab;
+      
+      // Update tab buttons
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      event.target.closest('.tab-btn').classList.add('active');
+      
+      // Update tab content
+      document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+      });
+      document.getElementById(`${tab}-tab`).classList.add('active');
+      
+      // Update stats if switching to facilitator
+      if (tab === 'facilitator') {
+        updateFacilitatorStats();
+      }
+    }
+
+    // Topic Selection
+    document.querySelectorAll('.topic-chip').forEach(chip => {
+      chip.addEventListener('click', function() {
+        document.querySelectorAll('.topic-chip').forEach(c => c.classList.remove('selected'));
+        this.classList.add('selected');
+        state.selectedTopic = this.dataset.topic;
+        showToast('Topic selected: ' + this.querySelector('span:last-child').textContent, 'info');
+      });
+    });
+
+    // Character Counter
+    document.getElementById('message-input').addEventListener('input', function() {
+      document.getElementById('char-count').textContent = this.value.length;
+    });
+
+    // Send Message
+    function sendMessage() {
+      const input = document.getElementById('message-input');
+      const text = input.value.trim();
+      
+      if (!text) {
+        showToast('Please enter a message', 'error');
+        return;
+      }
+      
+      const urgentHelp = document.getElementById('urgent-help').checked;
+      const facilitatorQueue = document.getElementById('facilitator-queue').checked;
+      
+      const message = {
+        id: state.messageId++,
+        text: text,
+        author: anonymousNames.generate(),
+        timestamp: new Date(),
+        topic: state.selectedTopic || 'general',
+        risk: assessRisk(text),
+        urgent: urgentHelp,
+        queued: facilitatorQueue || urgentHelp || assessRisk(text) === 'high',
+        reviewed: false,
+        approved: assessRisk(text) === 'low'
+      };
+      
+      state.messages.unshift(message);
+      
+      if (message.queued) {
+        state.queue.unshift(message);
+      }
+      
+      // Clear input
+      input.value = '';
+      document.getElementById('char-count').textContent = '0';
+      document.getElementById('urgent-help').checked = false;
+      document.getElementById('facilitator-queue').checked = false;
+      document.querySelectorAll('.topic-chip').forEach(c => c.classList.remove('selected'));
+      state.selectedTopic = null;
+      
+      // Update displays
+      renderParticipantFeed();
+      renderFacilitatorFeed();
+      renderQueue();
+      updateFacilitatorStats();
+      
+      // Show confirmation
+      showToast('Your message has been sent anonymously', 'success');
+      
+      // Alert for high-risk
+      if (message.risk === 'high') {
+        setTimeout(() => {
+          showToast('A facilitator has been notified and will respond soon', 'info');
+        }, 1000);
+      }
+    }
+
+    // Render Participant Feed
+    function renderParticipantFeed() {
+      const feed = document.getElementById('participant-feed');
+      const approvedMessages = state.messages.filter(m => m.approved);
+      
+      if (approvedMessages.length === 0) {
+        feed.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 2rem;">No messages yet. Be the first to share!</p>';
+        return;
+      }
+      
+      feed.innerHTML = approvedMessages.slice(0, 10).map(msg => `
+        <div class="message-item">
+          <div class="message-header">
+            <span class="message-author">${msg.author}</span>
+            <span style="font-size: 0.875rem; color: var(--text-muted);">
+              ${formatTime(msg.timestamp)}
+            </span>
+          </div>
+          ${msg.topic !== 'general' ? `<span style="font-size: 0.75rem; color: var(--primary);">📌 ${msg.topic}</span>` : ''}
+          <div class="message-content">${escapeHtml(msg.text)}</div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn btn-sm" onclick="reactToMessage(${msg.id}, '❤️')" style="padding: 0.25rem 0.5rem; font-size: 0.875rem; background: var(--bg);">
+              ❤️ Support
+            </button>
+            <button class="btn btn-sm" onclick="reactToMessage(${msg.id}, '🤗')" style="padding: 0.25rem 0.5rem; font-size: 0.875rem; background: var(--bg);">
+              🤗 Hugs
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Render Facilitator Feed
+    function renderFacilitatorFeed() {
+      const feed = document.getElementById('facilitator-feed');
+      const filterValue = document.getElementById('filter-select')?.value || 'all';
+      
+      let filteredMessages = state.messages;
+      if (filterValue === 'high') filteredMessages = state.messages.filter(m => m.risk === 'high');
+      else if (filterValue === 'medium') filteredMessages = state.messages.filter(m => m.risk === 'medium');
+      else if (filterValue === 'low') filteredMessages = state.messages.filter(m => m.risk === 'low');
+      else if (filterValue === 'unreviewed') filteredMessages = state.messages.filter(m => !m.reviewed);
+      
+      if (filteredMessages.length === 0) {
+        feed.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 2rem;">No messages to display</p>';
+        return;
+      }
+      
+      feed.innerHTML = filteredMessages.map(msg => `
+        <div class="message-item">
+          <div class="message-header">
+            <span class="message-author">${msg.author}</span>
+            <div class="message-meta">
+              <span class="risk-badge risk-${msg.risk}">${msg.risk} risk</span>
+              ${msg.urgent ? '<span class="risk-badge risk-high">URGENT</span>' : ''}
+              ${msg.reviewed ? '<span style="color: var(--secondary); font-size: 0.75rem;">✓ Reviewed</span>' : ''}
+            </div>
+          </div>
+          <div class="message-content">${escapeHtml(msg.text)}</div>
+          <div class="message-actions">
+            ${!msg.approved ? `<button class="btn btn-success" onclick="approveMessage(${msg.id})">Approve</button>` : ''}
+            ${!msg.reviewed ? `<button class="btn btn-secondary" onclick="markReviewed(${msg.id})">Mark Reviewed</button>` : ''}
+            ${msg.queued ? `<button class="btn btn-warning" onclick="removeFromQueue(${msg.id})">Remove from Queue</button>` : ''}
+            <button class="btn btn-danger" onclick="deleteMessage(${msg.id})">Delete</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Render Queue
+    function renderQueue() {
+      const queue = document.getElementById('priority-queue');
+      const queueItems = state.queue.filter(m => !m.reviewed);
+      
+      if (queueItems.length === 0) {
+        queue.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 2rem;">Queue is empty</p>';
+        return;
+      }
+      
+      queue.innerHTML = queueItems.map(msg => `
+        <div class="queue-item ${msg.risk === 'high' ? 'high-priority' : msg.risk === 'medium' ? 'medium-priority' : ''}">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <strong>${msg.author}</strong>
+            <span class="risk-badge risk-${msg.risk}">${msg.risk}</span>
+          </div>
+          <div style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 0.5rem;">
+            ${escapeHtml(msg.text.substring(0, 100))}${msg.text.length > 100 ? '...' : ''}
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="handleQueueItem(${msg.id})">
+            Handle Now
+          </button>
+        </div>
+      `).join('');
+    }
+
+    // Message Actions
+    function approveMessage(id) {
+      const msg = state.messages.find(m => m.id === id);
+      if (msg) {
+        msg.approved = true;
+        renderParticipantFeed();
+        renderFacilitatorFeed();
+        showToast('Message approved and now visible to all users', 'success');
+      }
+    }
+
+    function markReviewed(id) {
+      const msg = state.messages.find(m => m.id === id);
+      if (msg) {
+        msg.reviewed = true;
+        renderFacilitatorFeed();
+        renderQueue();
+        updateFacilitatorStats();
+        showToast('Message marked as reviewed', 'success');
+      }
+    }
+
+    function removeFromQueue(id) {
+      const index = state.queue.findIndex(m => m.id === id);
+      if (index > -1) {
+        state.queue.splice(index, 1);
+        const msg = state.messages.find(m => m.id === id);
+        if (msg) msg.queued = false;
+        renderQueue();
+        renderFacilitatorFeed();
+        updateFacilitatorStats();
+        showToast('Removed from queue', 'info');
+      }
+    }
+
+    function deleteMessage(id) {
+      if (!confirm('Are you sure you want to delete this message?')) return;
+      
+      const msgIndex = state.messages.findIndex(m => m.id === id);
+      if (msgIndex > -1) {
+        state.messages.splice(msgIndex, 1);
+      }
+      
+      const queueIndex = state.queue.findIndex(m => m.id === id);
+      if (queueIndex > -1) {
+        state.queue.splice(queueIndex, 1);
+      }
+      
+      renderParticipantFeed();
+      renderFacilitatorFeed();
+      renderQueue();
+      updateFacilitatorStats();
+      showToast('Message deleted', 'info');
+    }
+
+    function handleQueueItem(id) {
+      markReviewed(id);
+      approveMessage(id);
+      removeFromQueue(id);
+      showToast('Queue item handled successfully', 'success');
+    }
+
+    // Update Stats
+    function updateFacilitatorStats() {
+      document.getElementById('total-messages').textContent = state.messages.length;
+      document.getElementById('queue-count').textContent = state.queue.filter(m => !m.reviewed).length;
+      document.getElementById('high-risk-count').textContent = state.messages.filter(m => m.risk === 'high' && !m.reviewed).length;
+      
+      // Calculate average response time (mock)
+      const avgTime = Math.floor(Math.random() * 5) + 1;
+      document.getElementById('response-time').textContent = avgTime + 'm';
+    }
+
+    // Export Functions
+    function exportData(format) {
+      if (format === 'csv') {
+        const csv = [
+          'Timestamp,Author,Text,Risk Level,Topic,Reviewed,Approved',
+          ...state.messages.map(m => 
+            `"${m.timestamp.toISOString()}","${m.author}","${m.text.replace(/"/g, '""')}","${m.risk}","${m.topic}","${m.reviewed}","${m.approved}"`
+          )
+        ].join('\n');
+        
+        downloadFile(csv, 'silentspeak_export.csv', 'text/csv');
+      } else if (format === 'json') {
+        const json = JSON.stringify(state.messages, null, 2);
+        downloadFile(json, 'silentspeak_export.json', 'application/json');
+      }
+      
+      showToast(`Data exported as ${format.toUpperCase()}`, 'success');
+    }
+
+    function downloadFile(content, filename, type) {
+      const blob = new Blob([content], { type });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // Other Actions
+    function clearQueue() {
+      if (!confirm('Clear all items from the queue?')) return;
+      state.queue = [];
+      state.messages.forEach(m => m.queued = false);
+      renderQueue();
+      updateFacilitatorStats();
+      showToast('Queue cleared', 'info');
+    }
+
+    function startSession() {
+      if (!confirm('Start a new session? This will clear all current messages.')) return;
+      state.messages = [];
+      state.queue = [];
+      state.messageId = 1;
+      renderParticipantFeed();
+      renderFacilitatorFeed();
+      renderQueue();
+      updateFacilitatorStats();
+      showToast('New session started', 'success');
+    }
+
+    function triggerAlert() {
+      showToast('🚨 Crisis protocol activated - Emergency contacts notified', 'error');
+      // In real app, this would trigger actual notifications
+    }
+
+    function refreshQueue() {
+      renderQueue();
+      showToast('Queue refreshed', 'info');
+    }
+
+    function filterMessages() {
+      renderFacilitatorFeed();
+    }
+
+    function reactToMessage(id, emoji) {
+      showToast(`You showed support with ${emoji}`, 'success');
+    }
+
+    function showResource(type) {
+      const resources = {
+        crisis: '🆘 Crisis Helpline: Call 988 for immediate support (24/7)',
+        breathing: '🧘 Take a deep breath in for 4 counts, hold for 4, exhale for 4. Repeat 3 times.',
+        grounding: '🌱 Name 5 things you can see, 4 you can touch, 3 you can hear, 2 you can smell, 1 you can taste.',
+        chat: '💬 Connecting you with a live counselor...'
+      };
+      showToast(resources[type], 'info', 5000);
+    }
+
+    // Toast Notifications
+    function showToast(message, type = 'info', duration = 3000) {
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.innerHTML = `
+        <span>${message}</span>
+        <button onclick="this.parentElement.remove()" style="background: none; border: none; font-size: 1.25rem; cursor: pointer; margin-left: 1rem;">×</button>
+      `;
+      
+      document.body.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.remove();
+      }, duration);
+    }
+
+    // Utility Functions
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function formatTime(date) {
+      const now = new Date();
+      const diff = Math.floor((now - date) / 1000);
+      
+      if (diff < 60) return 'just now';
+      if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
+      if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+      return date.toLocaleDateString();
+    }
+
+    // Initialize counters
+    function updateCounters() {
+      document.getElementById('user-count').textContent = state.userCount;
+      document.getElementById('facilitator-count').textContent = state.facilitatorCount;
+      
+      // Simulate activity
+      setInterval(() => {
+        state.userCount += Math.floor(Math.random() * 3) - 1;
+        state.userCount = Math.max(1, state.userCount);
+        document.getElementById('user-count').textContent = state.userCount;
+      }, 30000);
+    }
+
+    // Add some demo messages
+    function addDemoMessages() {
+      const demoMessages = [
+        { text: "I'm feeling really anxious about my exams coming up", risk: 'medium', topic: 'school' },
+        { text: "Today was actually a good day. I went for a walk and felt peaceful.", risk: 'low', topic: 'mood' },
+        { text: "Sometimes I feel like nobody understands what I'm going through", risk: 'medium', topic: 'lonely' },
+        { text: "Thank you to whoever posted about breathing exercises. It really helped!", risk: 'low', topic: 'other' },
+        { text: "My family doesn't get why I need space sometimes", risk: 'low', topic: 'family' }
+      ];
+      
+      demoMessages.forEach((demo, index) => {
+        setTimeout(() => {
+          const message = {
+            id: state.messageId++,
+            text: demo.text,
+            author: anonymousNames.generate(),
+            timestamp: new Date(Date.now() - (index * 300000)),
+            topic: demo.topic,
+            risk: demo.risk,
+            urgent: false,
+            queued: demo.risk === 'high',
+            reviewed: demo.risk === 'low',
+            approved: true
+          };
+          state.messages.push(message);
+          if (message.queued) state.queue.push(message);
+        }, index * 100);
+      });
+      
+      setTimeout(() => {
+        renderParticipantFeed();
+        renderFacilitatorFeed();
+        renderQueue();
+        updateFacilitatorStats();
+      }, 600);
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+      updateCounters();
+      addDemoMessages();
+      renderParticipantFeed();
+      updateCurrentRoomLabel();
+      updateProfileSelectionUI();
+      document.body.classList.add('onboarding-active');
+      showOnboardingStep('sign-in');
+      
+      // Show welcome message
+      setTimeout(() => {
+        showToast('Welcome to SilentSpeak - Your safe space to share', 'info', 4000);
+      }, 1000);
+    });
+
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
