@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState, memo } from "react";
-import { Message, RiskLevel, FacilitatorInsight } from "@/types";
+import { Message, RiskLevel } from "@/types";
 import { formatRelativeTime } from "@/lib/utils";
 import { RiskBadge } from "@/components/ui/RiskBadge";
 import { Button } from "@/components/ui/Button";
@@ -147,7 +147,7 @@ export function FacilitatorTab({ messages, onApprove, onMarkReviewed, onRemoveFr
                       <div>
                         <p className="text-xs font-semibold uppercase tracking-wide text-primary/70">Encouragement Template</p>
                         <p className="mt-1 rounded-lg bg-primary/10 p-3 text-sm italic text-primary">
-                          "{guidance.encouragementTemplate}"
+                          &ldquo;{guidance.encouragementTemplate}&rdquo;
                         </p>
                       </div>
                     </div>

@@ -208,7 +208,7 @@ export function OnboardingOverlay(props: OnboardingOverlayProps) {
             >
               <h3 className="text-base font-semibold text-foreground">Anonymous Ally</h3>
               <p className="mt-1 text-sm text-muted-foreground">
-                Your anonymous identity allows you to share authentically while contributing to our community. By participating, you're not just receiving support—you're offering it to others through shared experience.
+                Your anonymous identity allows you to share authentically while contributing to our community. By participating, you&apos;re not just receiving support—you&apos;re offering it to others through shared experience.
               </p>
               <p className="mt-2 text-sm text-muted-foreground">Alias preview: {anonymousPreview}</p>
             </button>
