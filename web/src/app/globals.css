@@ -2,22 +2,75 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  color-scheme: light;
-  font-family: "Inter", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+/* SilentSpeak Design System - Empowering voices through design */
+
+@layer base {
+  :root {
+    /* Core SilentSpeak palette - Warm Trust theme for professional fundraising */
+    --background: 210 20% 98%;
+    --foreground: 221 39% 20%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 221 39% 20%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 221 39% 20%;
+
+    /* Navy/Indigo - professional, trustworthy */
+    --primary: 221 39% 36%;
+    --primary-light: 221 39% 50%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Sage Green - calm, growth, healing */
+    --secondary: 140 27% 59%;
+    --secondary-foreground: 0 0% 100%;
+
+    /* Warm Gold - hope, optimism, energy */
+    --accent: 38 92% 50%;
+    --accent-foreground: 0 0% 100%;
+
+    --muted: 210 20% 95%;
+    --muted-foreground: 221 20% 45%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 221 15% 88%;
+    --input: 221 15% 88%;
+    --ring: 221 39% 36%;
+
+    --radius: 1rem;
+
+    /* Gradients for visual impact */
+    --gradient-hero: linear-gradient(135deg, hsl(221 39% 36%) 0%, hsl(221 39% 50%) 100%);
+    --gradient-subtle: linear-gradient(135deg, hsl(210 20% 98%) 0%, hsl(221 25% 96%) 100%);
+    --gradient-warm: linear-gradient(135deg, hsl(38 92% 50%) 0%, hsl(38 85% 60%) 100%);
+
+    /* Shadows for depth */
+    --shadow-soft: 0 4px 20px -4px hsl(221 39% 36% / 0.15);
+    --shadow-glow: 0 0 40px hsl(221 39% 50% / 0.25);
+    --shadow-card: 0 8px 32px -8px hsl(221 20% 40% / 0.12);
+
+    /* Animation timing */
+    --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
 }
 
-body {
-  margin: 0;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #ede9fe, #fff7ed);
-  color: #1f2937;
-}
+@layer base {
+  * {
+    @apply border-border;
+  }
 
-* {
-  box-sizing: border-box;
-}
+  body {
+    @apply bg-background text-foreground;
+    margin: 0;
+    min-height: 100vh;
+    background: var(--gradient-subtle);
+    font-family: "Inter", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  }
 
-button {
-  cursor: pointer;
+  button {
+    cursor: pointer;
+  }
 }

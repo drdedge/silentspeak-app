@@ -7,13 +7,16 @@ interface TabButtonsProps {
 
 export function TabButtons({ activeTab, onChange }: TabButtonsProps) {
   return (
-    <div className="flex w-full max-w-6xl rounded-3xl bg-white/80 p-1 shadow-lg shadow-violet-200/50">
+    <div className="flex w-full max-w-6xl rounded-3xl bg-card/80 p-1 shadow-lg shadow-primary/10" role="tablist">
       <button
         type="button"
+        role="tab"
+        aria-selected={activeTab === 'participant'}
+        aria-controls="participant-panel"
         className={`flex-1 rounded-3xl px-6 py-3 text-sm font-semibold transition ${
           activeTab === 'participant'
-            ? 'bg-violet-600 text-white shadow-lg shadow-violet-600/40'
-            : 'text-slate-500 hover:bg-violet-50 hover:text-violet-600'
+            ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/40'
+            : 'text-muted-foreground hover:bg-primary/10 hover:text-primary'
         }`}
         onClick={() => onChange('participant')}
       >
@@ -21,10 +24,13 @@ export function TabButtons({ activeTab, onChange }: TabButtonsProps) {
       </button>
       <button
         type="button"
+        role="tab"
+        aria-selected={activeTab === 'facilitator'}
+        aria-controls="facilitator-panel"
         className={`flex-1 rounded-3xl px-6 py-3 text-sm font-semibold transition ${
           activeTab === 'facilitator'
-            ? 'bg-violet-600 text-white shadow-lg shadow-violet-600/40'
-            : 'text-slate-500 hover:bg-violet-50 hover:text-violet-600'
+            ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/40'
+            : 'text-muted-foreground hover:bg-primary/10 hover:text-primary'
         }`}
         onClick={() => onChange('facilitator')}
       >

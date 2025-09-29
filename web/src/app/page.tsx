@@ -10,13 +10,16 @@ import { OnboardingOverlay } from '@/components/OnboardingOverlay';
 import { Message, OnboardingStep, ProfileSelection, Room, Toast } from '@/types';
 import { assessRisk, generateAnonymousName } from '@/lib/utils';
 import { buildDemoMessages, roomSchedule } from '@/lib/demo-data';
+import appConfig from '@/config/app-config.json';
+
+const { ui, strings } = appConfig;
 
 export default function HomePage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
   const [currentTab, setCurrentTab] = useState<'participant' | 'facilitator'>('participant');
-  const [userCount, setUserCount] = useState(11);
-  const [facilitatorCount] = useState(3);
+  const [userCount, setUserCount] = useState(ui.systemStatus.defaultUserCount);
+  const [facilitatorCount] = useState(ui.systemStatus.defaultFacilitatorCount);
   const [currentRoom, setCurrentRoom] = useState<Room | null>(null);
   const [onboardingStep, setOnboardingStep] = useState<OnboardingStep>('signIn');
   const [profileSelection, setProfileSelection] = useState<ProfileSelection | null>(null);
@@ -27,6 +30,7 @@ export default function HomePage() {
 
   const messageIdRef = useRef(1);
 
+  // Initialize demo messages
   useEffect(() => {
     const seeds = buildDemoMessages();
     messageIdRef.current = seeds.length + 1;
@@ -36,20 +40,23 @@ export default function HomePage() {
     setUserCount(Math.floor(Math.random() * 10) + 5);
   }, []);
 
+  // Regenerate anonymous preview when on profile step
   useEffect(() => {
     if (onboardingStep === 'profile') {
       setAnonymousPreview(generateAnonymousName());
     }
   }, [onboardingStep]);
 
+  // Simulate user count fluctuation
   useEffect(() => {
     const interval = window.setInterval(() => {
       setUserCount((prev) => Math.max(1, prev + Math.floor(Math.random() * 3) - 1));
-    }, 30000);
+    }, ui.systemStatus.userCountFluctuationInterval);
 
     return () => window.clearInterval(interval);
   }, []);
 
+  // Handle body overflow for modals
   useEffect(() => {
     if (typeof document === 'undefined') {
       return;
@@ -66,13 +73,14 @@ export default function HomePage() {
     };
   }, [onboardingStep]);
 
-  const addToast = useCallback((message: string, type: Toast['type'] = 'info', duration = 3200) => {
+  const addToast = useCallback((message: string, type: Toast['type'] = 'info', duration?: number) => {
     const id = crypto.randomUUID();
+    const toastDuration = duration ?? ui.toastDurations[type];
     setToasts((prev) => [...prev, { id, message, type }]);
 
     window.setTimeout(() => {
       setToasts((prev) => prev.filter((toast) => toast.id !== id));
-    }, duration);
+    }, toastDuration);
   }, []);
 
   const roomGroups = useMemo(() => {
@@ -99,10 +107,10 @@ export default function HomePage() {
       };
 
       setMessages((prev) => [message, ...prev]);
-      addToast('Your message has been sent anonymously', 'success');
+      addToast(strings.toasts.messageSent, 'success');
 
       if (message.queued) {
-        addToast('A facilitator has been notified and will respond soon', 'info', 4000);
+        addToast(strings.toasts.facilitatorNotified, 'info', ui.toastDurations.info);
       }
     },
     [addToast, profileSelection, selectedTopic],
@@ -117,7 +125,7 @@ export default function HomePage() {
             : message,
         ),
       );
-      addToast('Message approved for the participant feed', 'success');
+      addToast(strings.toasts.messageApproved, 'success');
     },
     [addToast],
   );
@@ -131,7 +139,7 @@ export default function HomePage() {
             : message,
         ),
       );
-      addToast('Message marked as reviewed', 'info');
+      addToast(strings.toasts.messageReviewed, 'info');
     },
     [addToast],
   );
@@ -145,7 +153,7 @@ export default function HomePage() {
             : message,
         ),
       );
-      addToast('Message removed from queue', 'info');
+      addToast(strings.toasts.messageRemoved, 'info');
     },
     [addToast],
   );
@@ -153,11 +161,12 @@ export default function HomePage() {
   const handleSubmitCredentials = useCallback(
     (action: 'login' | 'signup') => {
       if (!username.trim() || !password.trim()) {
-        addToast('Enter both a username and password to continue', 'error');
+        addToast(strings.toasts.credentialsError, 'error');
         return;
       }
 
-      addToast(`${action === 'login' ? 'Logged in' : 'Signed up'} as ${username}`, 'success');
+      const successMessage = strings.toasts[action === 'login' ? 'loginSuccess' : 'signupSuccess'].replace('{username}', username);
+      addToast(successMessage, 'success');
       setOnboardingStep('terms');
     },
     [addToast, password, username],
@@ -165,25 +174,26 @@ export default function HomePage() {
 
   const handleAcceptTerms = useCallback(() => {
     setOnboardingStep('profile');
-    addToast('Thanks for accepting our community guidelines', 'success');
+    addToast(strings.toasts.termsAccepted, 'success');
   }, [addToast]);
 
   const handleRejectTerms = useCallback(() => {
     setOnboardingStep('signIn');
-    addToast('You can return when you are ready to agree to the guidelines.', 'info');
+    addToast(strings.toasts.termsRejected, 'info');
   }, [addToast]);
 
   const handleSelectProfile = useCallback(
     (profile: ProfileSelection) => {
       setProfileSelection(profile);
-      addToast(`${profile === 'custom' ? 'Guided Support Coach' : 'Anonymous Ally'} profile selected`, 'info');
+      const profileName = profile === 'custom' ? 'Guided Support Coach' : 'Anonymous Ally';
+      addToast(strings.toasts.profileSelected.replace('{profile}', profileName), 'info');
     },
     [addToast],
   );
 
   const handleContinueProfile = useCallback(() => {
     if (!profileSelection) {
-      addToast('Select a profile option to continue', 'error');
+      addToast(strings.toasts.profileRequired, 'error');
       return;
     }
     setOnboardingStep('rooms');
@@ -193,7 +203,7 @@ export default function HomePage() {
     (room: Room) => {
       setCurrentRoom(room);
       setOnboardingStep('complete');
-      addToast(`You joined ${room.name}`, 'success');
+      addToast(strings.toasts.roomJoined.replace('{roomName}', room.name), 'success');
     },
     [addToast],
   );
@@ -203,7 +213,7 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-100 via-rose-50 to-amber-50 pb-20">
+    <div className="min-h-screen bg-gradient-to-br from-background via-muted to-background pb-20">
       <Header userCount={userCount} facilitatorCount={facilitatorCount} currentRoom={currentRoom} />
 
       <main className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-6 pb-24 pt-10">

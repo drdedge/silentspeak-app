@@ -1,76 +1,34 @@
 import { Message, RiskLevel } from '@/types';
+import appConfig from '@/config/app-config.json';
 
-const adjectives = [
-  'Gentle',
-  'Brave',
-  'Thoughtful',
-  'Caring',
-  'Strong',
-  'Wise',
-  'Kind',
-  'Peaceful',
-  'Hopeful',
-  'Resilient',
-];
+const { anonymousNames, riskAssessment } = appConfig;
 
-const nouns = [
-  'Butterfly',
-  'Phoenix',
-  'Mountain',
-  'Ocean',
-  'Star',
-  'Garden',
-  'Rainbow',
-  'Sunrise',
-  'Moonlight',
-  'River',
-];
-
-export function generateAnonymousName() {
-  const adj = adjectives[Math.floor(Math.random() * adjectives.length)];
-  const noun = nouns[Math.floor(Math.random() * nouns.length)];
+export function generateAnonymousName(): string {
+  const adj = anonymousNames.adjectives[Math.floor(Math.random() * anonymousNames.adjectives.length)];
+  const noun = anonymousNames.nouns[Math.floor(Math.random() * anonymousNames.nouns.length)];
   const num = Math.floor(Math.random() * 999) + 1;
   return `${adj} ${noun} #${num}`;
 }
 
 export function assessRisk(text: string): RiskLevel {
+  if (!text || typeof text !== 'string') {
+    return 'low';
+  }
+
   const loweredText = text.toLowerCase();
-  const highRiskTerms = [
-    'suicide',
-    'kill myself',
-    'end it',
-    'die',
-    'overdose',
-    'self-harm',
-    'cutting',
-    'not safe',
-    'hurt myself',
-  ];
 
-  const mediumRiskTerms = [
-    'panic',
-    'anxious',
-    'scared',
-    'depressed',
-    "can't cope",
-    'hate myself',
-    'worthless',
-    'crying',
-    'alone',
-  ];
-
-  if (highRiskTerms.some((term) => loweredText.includes(term))) {
+  if (riskAssessment.highRiskTerms.some((term) => loweredText.includes(term))) {
     return 'high';
   }
 
-  if (mediumRiskTerms.some((term) => loweredText.includes(term))) {
+  if (riskAssessment.mediumRiskTerms.some((term) => loweredText.includes(term))) {
     return 'medium';
   }
 
   return 'low';
 }
 
-export function formatRelativeTime(date: Date) {
+export function formatRelativeTime(date: Date): string {
   const diffSeconds = Math.floor((Date.now() - date.getTime()) / 1000);
 
   if (diffSeconds < 60) {

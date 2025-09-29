@@ -1,0 +1,370 @@
+{
+  "app": {
+    "name": "SilentSpeak",
+    "tagline": "Safe, anonymous peer support with facilitator oversight",
+    "version": "1.0.0",
+    "environment": "demo"
+  },
+  "ui": {
+    "messageCharacterLimit": 500,
+    "toastDurations": {
+      "success": 3200,
+      "error": 4000,
+      "info": 3200
+    },
+    "systemStatus": {
+      "defaultUserCount": 11,
+      "defaultFacilitatorCount": 3,
+      "userCountFluctuationInterval": 30000
+    }
+  },
+  "topics": [
+    {
+      "id": "anxiety",
+      "label": "Anxiety",
+      "icon": "😰"
+    },
+    {
+      "id": "school",
+      "label": "School",
+      "icon": "📚"
+    },
+    {
+      "id": "family",
+      "label": "Family",
+      "icon": "👨‍👩‍👧"
+    },
+    {
+      "id": "friends",
+      "label": "Friends",
+      "icon": "👥"
+    },
+    {
+      "id": "mood",
+      "label": "Mood",
+      "icon": "🌈"
+    },
+    {
+      "id": "stress",
+      "label": "Stress",
+      "icon": "😓"
+    },
+    {
+      "id": "lonely",
+      "label": "Loneliness",
+      "icon": "🌙"
+    },
+    {
+      "id": "gratitude",
+      "label": "Gratitude",
+      "icon": "💚"
+    },
+    {
+      "id": "other",
+      "label": "Other",
+      "icon": "💭"
+    }
+  ],
+  "resources": [
+    {
+      "id": "crisis",
+      "title": "Crisis Helpline",
+      "description": "24/7 confidential support",
+      "icon": "📞",
+      "link": "tel:988"
+    },
+    {
+      "id": "breathing",
+      "title": "Breathing Exercise",
+      "description": "Quick calming technique",
+      "icon": "🫁",
+      "link": null
+    },
+    {
+      "id": "grounding",
+      "title": "Grounding Techniques",
+      "description": "Stay present and centered",
+      "icon": "🧘"
+    },
+    {
+      "id": "chat",
+      "title": "Live Chat Support",
+      "description": "Connect with a facilitator",
+      "icon": "💬"
+    }
+  ],
+  "riskAssessment": {
+    "highRiskTerms": [
+      "suicide",
+      "kill myself",
+      "end it",
+      "die",
+      "overdose",
+      "self-harm",
+      "cutting",
+      "not safe",
+      "hurt myself"
+    ],
+    "mediumRiskTerms": [
+      "panic",
+      "anxious",
+      "scared",
+      "depressed",
+      "can't cope",
+      "hate myself",
+      "worthless",
+      "crying",
+      "alone"
+    ]
+  },
+  "anonymousNames": {
+    "adjectives": [
+      "Gentle",
+      "Brave",
+      "Thoughtful",
+      "Caring",
+      "Strong",
+      "Wise",
+      "Kind",
+      "Peaceful",
+      "Hopeful",
+      "Resilient"
+    ],
+    "nouns": [
+      "Butterfly",
+      "Phoenix",
+      "Mountain",
+      "Ocean",
+      "Star",
+      "Garden",
+      "Rainbow",
+      "Sunrise",
+      "Moonlight",
+      "River"
+    ]
+  },
+  "onboarding": {
+    "steps": [
+      {
+        "id": "signIn",
+        "stepNumber": 1,
+        "title": "Sign in to explore SilentSpeak",
+        "description": "Use any username and password to continue. Nothing is stored outside your browser in this demo.",
+        "fields": [
+          {
+            "id": "username",
+            "label": "Username",
+            "type": "text",
+            "placeholder": "e.g. facilitator.demo",
+            "required": true
+          },
+          {
+            "id": "password",
+            "label": "Password",
+            "type": "password",
+            "placeholder": "Enter any password",
+            "required": true
+          }
+        ]
+      },
+      {
+        "id": "terms",
+        "stepNumber": 2,
+        "title": "Community Guidelines",
+        "description": "A few commitments help everyone feel safe.",
+        "guidelines": [
+          "Keep conversations respectful, supportive, and anonymous.",
+          "Flag posts that suggest immediate harm so facilitators can act quickly.",
+          "Understand facilitators may review posts to keep the space safe.",
+          "Use SilentSpeak for peer support, not urgent crisis intervention.",
+          "Acknowledge crisis protocols could notify emergency contacts if risk is detected."
+        ],
+        "crisisNotice": "SilentSpeak is not a replacement for emergency services. If you are in crisis, contact your local emergency number or dial 988 (US) immediately."
+      },
+      {
+        "id": "profile",
+        "stepNumber": 3,
+        "title": "Choose how you show up",
+        "description": "Facilitators often use the custom profile during live demos. Participants usually remain anonymous.",
+        "profiles": [
+          {
+            "id": "custom",
+            "name": "Guided Support Coach",
+            "description": "Predefined facilitator voice for walkthroughs featuring grounded, empathetic responses.",
+            "bio": "Here to model supportive responses for the group."
+          },
+          {
+            "id": "anonymous",
+            "name": "Anonymous Ally",
+            "description": "SilentSpeak generates a fresh alias every session so you can share freely without revealing identity.",
+            "bio": "Alias preview: {preview}"
+          }
+        ]
+      },
+      {
+        "id": "rooms",
+        "stepNumber": 4,
+        "title": "Pick a session room",
+        "description": "Rooms are grouped by date so you can join the right conversation during the walkthrough."
+      }
+    ]
+  },
+  "roomSchedule": [
+    {
+      "label": "Today",
+      "rooms": [
+        {
+          "id": "today-grounding",
+          "name": "Grounding Circle",
+          "time": "2:00 PM",
+          "focus": "Breathing and mindfulness",
+          "availability": "3 spots left"
+        },
+        {
+          "id": "today-reflection",
+          "name": "Evening Reflections",
+          "time": "7:00 PM",
+          "focus": "Gratitude check-in",
+          "availability": "Open seating"
+        }
+      ]
+    },
+    {
+      "label": "Tomorrow",
+      "rooms": [
+        {
+          "id": "tomorrow-resilience",
+          "name": "Resilience Builder",
+          "time": "10:00 AM",
+          "focus": "Coping skills lab",
+          "availability": "2 facilitators on call"
+        },
+        {
+          "id": "tomorrow-story-share",
+          "name": "Story Share",
+          "time": "4:00 PM",
+          "focus": "Wins and challenges",
+          "availability": "Limited to 12 participants"
+        }
+      ]
+    },
+    {
+      "label": "Later This Week",
+      "rooms": [
+        {
+          "id": "weekend-grounding",
+          "name": "Weekend Grounding",
+          "time": "Saturday 11:00 AM",
+          "focus": "Mindful breathing sequence",
+          "availability": "5 spots left"
+        },
+        {
+          "id": "weekend-reset",
+          "name": "Sunday Reset",
+          "time": "Sunday 5:00 PM",
+          "focus": "Intention setting for the week",
+          "availability": "Waitlist available"
+        }
+      ]
+    }
+  ],
+  "demoMessages": [
+    {
+      "text": "I'm feeling really anxious about my exams coming up.",
+      "author": "Quiet Willow #17",
+      "minutesAgo": 32,
+      "topic": "school",
+      "urgent": false,
+      "queued": false,
+      "reviewed": true,
+      "approved": true
+    },
+    {
+      "text": "Today was actually a good day. I went for a walk and felt peaceful.",
+      "author": "Bright River #744",
+      "minutesAgo": 58,
+      "topic": "mood",
+      "urgent": false,
+      "queued": false,
+      "reviewed": true,
+      "approved": true
+    },
+    {
+      "text": "Sometimes I feel like nobody understands what I'm going through.",
+      "author": "Caring Star #203",
+      "minutesAgo": 85,
+      "topic": "lonely",
+      "urgent": false,
+      "queued": true,
+      "reviewed": false,
+      "approved": false
+    },
+    {
+      "text": "Thank you to whoever posted about breathing exercises. It really helped!",
+      "author": "Gentle Garden #521",
+      "minutesAgo": 120,
+      "topic": "gratitude",
+      "urgent": false,
+      "queued": false,
+      "reviewed": true,
+      "approved": true
+    },
+    {
+      "text": "My family doesn't get why I need space sometimes.",
+      "author": "Hopeful Sunrise #89",
+      "minutesAgo": 160,
+      "topic": "family",
+      "urgent": false,
+      "queued": true,
+      "reviewed": false,
+      "approved": false
+    }
+  ],
+  "strings": {
+    "participant": {
+      "welcomeTitle": "Welcome to your safe space",
+      "welcomeDescription": "Share what is on your mind anonymously. Facilitators keep an eye on things to make sure everyone stays safe and supported.",
+      "messagePromptTitle": "What is on your mind today?",
+      "messagePromptDescription": "Select a topic to help facilitators triage quicker (optional).",
+      "messagePlaceholder": "Type your message here... Remember, you're not alone in this.",
+      "urgentLabel": "I need urgent support",
+      "requestFacilitatorLabel": "Request facilitator attention",
+      "sendButton": "Send anonymously",
+      "communityMessagesTitle": "Community messages",
+      "communityMessagesDescription": "You are not alone—others are sharing too.",
+      "resourcesTitle": "Supportive resources"
+    },
+    "facilitator": {
+      "statsTitle": "Triage snapshot",
+      "queueTitle": "Priority queue",
+      "queueDescription": "High-risk or facilitator flagged messages waiting for review.",
+      "queueEmptyMessage": "The queue is clear. Great job staying on top of things!",
+      "feedTitle": "Live message feed",
+      "feedDescription": "Filter by risk level to focus your review.",
+      "approveButton": "Approve for feed",
+      "markReviewedButton": "Mark as reviewed",
+      "removeFromQueueButton": "Remove from queue",
+      "statLabels": {
+        "totalMessages": "Total messages",
+        "inQueue": "In queue",
+        "highPriority": "High priority",
+        "reviewedToday": "Reviewed today"
+      }
+    },
+    "toasts": {
+      "messageSent": "Your message has been sent anonymously",
+      "facilitatorNotified": "A facilitator has been notified and will respond soon",
+      "messageApproved": "Message approved for the participant feed",
+      "messageReviewed": "Message marked as reviewed",
+      "messageRemoved": "Message removed from queue",
+      "credentialsError": "Enter both a username and password to continue",
+      "loginSuccess": "Logged in as {username}",
+      "signupSuccess": "Signed up as {username}",
+      "termsAccepted": "Thanks for accepting our community guidelines",
+      "termsRejected": "You can return when you are ready to agree to the guidelines.",
+      "profileSelected": "{profile} profile selected",
+      "profileRequired": "Select a profile option to continue",
+      "roomJoined": "You joined {roomName}"
+    }
+  }
+}

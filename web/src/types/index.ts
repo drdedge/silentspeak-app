@@ -11,6 +11,21 @@ export interface Message {
   queued: boolean;
   reviewed: boolean;
   approved: boolean;
+  reflectionContext?: string; // Optional Adlerian life task context
+}
+
+export interface AdlerianPromptDisplay {
+  id: string;
+  question: string;
+  category: string;
+  lifeTask: string;
+}
+
+export interface FacilitatorInsight {
+  theme: string;
+  focus: string;
+  suggestedApproach: string[];
+  encouragementTemplate: string;
 }
 
 export interface Room {

@@ -8,9 +8,9 @@ interface ToastTrayProps {
 }
 
 const typeStyles: Record<Toast['type'], string> = {
-  success: 'border-emerald-300 bg-emerald-50 text-emerald-800',
-  error: 'border-rose-300 bg-rose-50 text-rose-800',
-  info: 'border-violet-300 bg-violet-50 text-violet-800',
+  success: 'border-secondary/30 bg-secondary/10 text-secondary',
+  error: 'border-destructive/30 bg-destructive/10 text-destructive',
+  info: 'border-primary/30 bg-primary/10 text-primary',
 };
 
 export function ToastTray({ toasts, onDismiss }: ToastTrayProps) {
@@ -19,11 +19,13 @@ export function ToastTray({ toasts, onDismiss }: ToastTrayProps) {
   }
 
   return (
-    <div className="fixed bottom-6 right-6 z-[60] flex w-full max-w-sm flex-col gap-3">
+    <div className="fixed bottom-6 right-6 z-[60] flex w-full max-w-sm flex-col gap-3" role="region" aria-label="Notifications">
       {toasts.map((toast) => (
         <div
           key={toast.id}
-          className={`flex items-start gap-3 rounded-2xl border px-4 py-3 shadow-lg shadow-black/10 transition ${
+          role="alert"
+          aria-live="polite"
+          className={`flex items-start gap-3 rounded-2xl border px-4 py-3 shadow-lg shadow-black/10 transition animate-in slide-in-from-right ${
             typeStyles[toast.type]
           }`}
         >
@@ -31,7 +33,7 @@ export function ToastTray({ toasts, onDismiss }: ToastTrayProps) {
           <button
             type="button"
             aria-label="Dismiss notification"
-            className="text-lg font-bold text-slate-400 transition hover:text-slate-600"
+            className="text-lg font-bold opacity-60 hover:opacity-100 transition"
             onClick={() => onDismiss(toast.id)}
           >
             ×

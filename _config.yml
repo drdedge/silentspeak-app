@@ -1,0 +1,15 @@
+# Jekyll configuration for GitHub Pages
+# This tells Jekyll to ignore certain files/folders
+
+exclude:
+  - web/node_modules
+  - web/.next
+  - web/src
+  - web/package.json
+  - web/package-lock.json
+  - docs
+  - legacy
+  - "*.md"
+  - .gitignore
+  - .github
+  - todo.md

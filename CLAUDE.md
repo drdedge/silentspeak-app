@@ -4,76 +4,101 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-SilentSpeak is a mental health support platform that provides anonymous messaging capabilities with facilitator oversight. It's built as a single-page HTML application with embedded JavaScript and CSS.
+SilentSpeak is a mental health support platform that provides anonymous messaging capabilities with facilitator oversight. It's built with Next.js (App Router) and deployed to GitHub Pages.
 
 ## Architecture
 
-The application is a self-contained HTML file (`silentspeak_demo.html`) with:
-- **Frontend**: Pure HTML/CSS/JavaScript, no build process required
-- **State Management**: In-memory JavaScript state object managing messages, queue, and user sessions
-- **UI Components**: Tab-based interface separating participant and facilitator views
-- **Risk Assessment**: Built-in keyword-based risk evaluation system for message prioritization
+The application is a **Next.js 15** static export with:
+- **Framework**: Next.js 15 with App Router, React 19, TypeScript
+- **Styling**: Tailwind CSS
+- **State Management**: React hooks (useState, useCallback, useMemo) in client component
+- **Deployment**: Static export to GitHub Pages via GitHub Actions
+- **Base Path**: Configured for `/silentspeak-app` subdirectory deployment
 
-## Key Components
+### Directory Structure
 
-### State Management (line 852-860)
-Central state object tracks messages, queue, selected topics, current tab, and user/facilitator counts.
+```
+web/                          # Main Next.js application
+├── src/
+│   ├── app/
+│   │   ├── layout.tsx       # Root layout with global styles
+│   │   └── page.tsx         # Main page - central state management
+│   ├── components/          # React components
+│   │   ├── Header.tsx       # User counts and room info display
+│   │   ├── TabButtons.tsx   # Participant/Facilitator tab switcher
+│   │   ├── ParticipantTab.tsx    # Anonymous messaging interface
+│   │   ├── FacilitatorTab.tsx    # Moderation queue interface
+│   │   ├── OnboardingOverlay.tsx # Multi-step onboarding flow
+│   │   └── ToastTray.tsx    # Toast notification system
+│   ├── lib/
+│   │   ├── utils.ts         # Risk assessment, name generation, formatters
+│   │   └── demo-data.ts     # Seed messages and room schedule
+│   └── types/
+│       └── index.ts         # TypeScript interfaces
+├── next.config.ts           # Next.js config with static export settings
+├── tsconfig.json
+└── package.json
 
-### Risk Assessment System (line 875-887)
-Automated message risk classification into high/medium/low categories based on keyword detection.
+legacy/                       # Original standalone HTML prototype
+├── silentspeak_demo.html
+```
 
-### Anonymous Name Generator (line 863-872)
-Generates privacy-preserving usernames combining adjectives, nouns, and random numbers.
+## Key Concepts
 
-### Message Queue System
-Priority queue for facilitators to handle urgent or high-risk messages requiring immediate attention.
+### State Management ([page.tsx](web/src/app/page.tsx))
+All application state lives in the main `page.tsx` component:
+- Message array with risk levels, queue status, approval states
+- User/facilitator counts with simulated fluctuation
+- Onboarding flow state (sign-in → terms → profile → rooms)
+- Toast notifications
+
+### Risk Assessment System ([utils.ts:36-71](web/src/lib/utils.ts#L36))
+Automated message classification based on keyword detection:
+- **High risk**: suicide, self-harm, immediate danger terms → auto-queued for facilitators
+- **Medium risk**: anxiety, depression, distress terms → queued on request
+- **Low risk**: general messages → auto-approved
+
+### Anonymous Name Generator ([utils.ts:29-34](web/src/lib/utils.ts#L29))
+Privacy-preserving usernames: `[Adjective] [Noun] #[Number]` (e.g., "Gentle Butterfly #423")
+
+### Dual Interface
+- **Participant Tab**: Anonymous message submission with topic selection and urgent flagging
+- **Facilitator Tab**: Message queue with approve/review/remove actions and risk filtering
+
+### Onboarding Flow ([OnboardingOverlay.tsx](web/src/components/OnboardingOverlay.tsx))
+Multi-step modal: Sign In → Terms → Profile Selection → Room Selection
 
 ## Development Commands
 
-Since this is a standalone HTML file, no build process is required:
-
 ```bash
-# Open the file directly in a browser
-open silentspeak_demo.html  # macOS
-xdg-open silentspeak_demo.html  # Linux
-start silentspeak_demo.html  # Windows
+# Install dependencies
+cd web
+npm install --legacy-peer-deps
 
-# Or serve with a simple HTTP server
-python3 -m http.server 8000
-# Then navigate to http://localhost:8000/silentspeak_demo.html
+# Run development server (http://localhost:3000)
+npm run dev
+
+# Build static export
+npm run build
+# Output goes to web/out/
+
+# Lint
+npm run lint
 ```
 
-## Testing Approach
+## Deployment
 
-Manual testing via browser console:
-- Test message submission: `sendMessage()`
-- Test risk assessment: `assessRisk("test message")`
-- Test queue management: `renderQueue()`, `handleQueueItem(id)`
-- Test data export: `exportData('csv')` or `exportData('json')`
+GitHub Actions automatically builds and deploys on push to `main`:
+1. Builds Next.js static export in `web/out/`
+2. Deploys to GitHub Pages
+3. Available at: https://drdedge.github.io/silentspeak-app/
 
-## Git Workflow
+See [.github/workflows/deploy.yml](.github/workflows/deploy.yml) for CI/CD configuration.
 
-```bash
-# Check current status
-git status
+## Important Design Principles
 
-# Stage changes
-git add silentspeak_demo.html
-
-# View changes
-git diff --staged
-
-# Commit changes
-git commit -m "message"
-
-# Push to GitHub
-git push origin main
-```
-
-## Important Considerations
-
-- **Privacy-First Design**: All user messages are anonymized with generated names
-- **Risk Assessment**: High-risk keywords trigger immediate facilitator alerts
+- **Privacy-First**: All user messages are anonymized with generated names
+- **Risk-Aware**: High-risk keywords trigger immediate facilitator alerts
 - **Dual Interface**: Separate views for participants (anonymous sharing) and facilitators (moderation/support)
-- **No Backend**: Currently demo/prototype - all data is client-side only
-- **Export Functionality**: CSV and JSON export capabilities for data analysis
+- **Client-Side Only**: Demo/prototype - all data is ephemeral and browser-local
+- **Progressive Onboarding**: Multi-step flow builds trust before message submission
