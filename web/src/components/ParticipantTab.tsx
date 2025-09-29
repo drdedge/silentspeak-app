@@ -24,6 +24,8 @@ export function ParticipantTab({ messages, selectedTopic, onSelectTopic, onSendM
   const [urgent, setUrgent] = useState(false);
   const [requestFacilitator, setRequestFacilitator] = useState(false);
   const [showReflectionPrompts, setShowReflectionPrompts] = useState(true);
+  const [showPostMessageReflection, setShowPostMessageReflection] = useState(false);
+  const [lastSubmittedTopic, setLastSubmittedTopic] = useState<string | null>(null);
 
   const sortedMessages = useMemo(
     () => [...messages].sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime()),
@@ -48,6 +50,39 @@ export function ParticipantTab({ messages, selectedTopic, onSelectTopic, onSendM
     }));
   }, [selectedTopic, showReflectionPrompts]);
 
+  // Get post-message encouragement prompts
+  const postMessagePrompts = useMemo<AdlerianPromptDisplay[]>(() => {
+    if (!showPostMessageReflection || !lastSubmittedTopic) {
+      return [];
+    }
+
+    const prompts = getAdlerianPrompts(lastSubmittedTopic, 2, 'goal-setting');
+    return prompts.map(p => ({
+      id: p.id,
+      question: p.question,
+      category: p.category,
+      lifeTask: p.lifeTask,
+    }));
+  }, [showPostMessageReflection, lastSubmittedTopic]);
+
+  // Dynamic placeholder based on selected topic
+  const placeholderText = useMemo(() => {
+    if (!selectedTopic) {
+      return strings.participant.messagePlaceholder;
+    }
+
+    const topicPrompts: Record<string, string> = {
+      'relationships': 'What would you like to share about your relationships or connections with others?',
+      'work-school': 'What\'s on your mind about work, school, or your sense of purpose?',
+      'self-care': 'How are you taking care of yourself? What challenges are you facing?',
+      'loss-grief': 'What would help you process what you\'re experiencing?',
+      'anxiety-stress': 'What\'s weighing on you right now? You\'re not alone in this.',
+      'general': strings.participant.messagePlaceholder,
+    };
+
+    return topicPrompts[selectedTopic] || strings.participant.messagePlaceholder;
+  }, [selectedTopic]);
+
   const handleSubmit = () => {
     const trimmed = message.trim();
     if (!trimmed) {
@@ -59,6 +94,15 @@ export function ParticipantTab({ messages, selectedTopic, onSelectTopic, onSendM
       urgent,
       requestFacilitator,
     });
+
+    // Show post-message reflection
+    setLastSubmittedTopic(selectedTopic);
+    setShowPostMessageReflection(true);
+
+    // Auto-hide after 10 seconds
+    setTimeout(() => {
+      setShowPostMessageReflection(false);
+    }, 10000);
 
     setMessage('');
     setUrgent(false);
@@ -128,13 +172,29 @@ export function ParticipantTab({ messages, selectedTopic, onSelectTopic, onSendM
       </section>
 
       {reflectionPrompts.length > 0 && (
-        <ReflectionPromptCard
-          prompts={reflectionPrompts}
-          title="Before you share, take a moment to reflect"
-          description="These questions can help you explore your thoughts more deeply."
-          onDismiss={() => setShowReflectionPrompts(false)}
-          dismissible={true}
-        />
+        <section className="rounded-3xl bg-gradient-to-br from-primary/10 via-primary/5 to-transparent p-6 shadow-xl shadow-primary/20 border-2 border-primary/30">
+          <ReflectionPromptCard
+            prompts={reflectionPrompts}
+            title="Before you share, take a moment to reflect"
+            description="These questions can help you explore your thoughts more deeply."
+            onDismiss={() => setShowReflectionPrompts(false)}
+            dismissible={true}
+            className="border-none bg-transparent shadow-none"
+          />
+        </section>
+      )}
+
+      {showPostMessageReflection && postMessagePrompts.length > 0 && (
+        <section className="rounded-3xl bg-gradient-to-br from-secondary/10 via-secondary/5 to-transparent p-6 shadow-xl shadow-secondary/20 border-2 border-secondary/30 animate-in fade-in slide-in-from-top-4 duration-500">
+          <ReflectionPromptCard
+            prompts={postMessagePrompts}
+            title="Thank you for sharing! 🌟"
+            description="As you reflect on what you shared, consider these questions for your journey forward."
+            onDismiss={() => setShowPostMessageReflection(false)}
+            dismissible={true}
+            className="border-none bg-transparent shadow-none"
+          />
+        </section>
       )}
 
       <section className="rounded-3xl bg-card/90 p-6 shadow-xl shadow-primary/10">
@@ -148,7 +208,7 @@ export function ParticipantTab({ messages, selectedTopic, onSelectTopic, onSendM
           value={message}
           onChange={(event) => setMessage(event.target.value.slice(0, characterLimit))}
           onKeyDown={handleKeyDown}
-          placeholder={strings.participant.messagePlaceholder}
+          placeholder={placeholderText}
           className="mt-4 w-full rounded-2xl border border-input bg-card p-4 text-sm leading-relaxed text-foreground shadow-inner focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
           rows={4}
           aria-label="Message textarea"
