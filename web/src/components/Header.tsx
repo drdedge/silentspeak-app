@@ -13,8 +13,8 @@ export function Header({ userCount, facilitatorCount, currentRoom }: HeaderProps
     <header className="sticky top-0 z-20 border-b border-border bg-card/80 backdrop-blur">
       <div className="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary-light text-2xl font-semibold text-primary-foreground">
-            SS
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary-light">
+            <span className="text-primary-foreground font-bold text-2xl">🔉</span>
           </div>
           <div>
             <h1 className="text-xl font-bold text-foreground">SilentSpeak</h1>
